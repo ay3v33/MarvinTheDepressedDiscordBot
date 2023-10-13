@@ -24,9 +24,9 @@ module.exports = {
 			} else {
 				interaction.channel.bulkDelete(input).then(() => {
 					if(input==1){
-						interaction.reply(`Deleted 1 message.`).then(msg => msg.delete(3000));
+						interaction.reply(`Deleting 1 message.`).then(msg => msg.delete(3000));
 					} else {
-						interaction.reply(`Deleted ${input} messages.`).then(msg => msg.delete(3000));
+						interaction.reply(`Deleting ${input} messages.`).then(msg => msg.delete(3000));
 					}
             	});
         	}

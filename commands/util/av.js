@@ -13,11 +13,6 @@ module.exports = {
 	async execute(interaction) {
 		const userObj = interaction.options._hoistedOptions[0].user;
 		//userObj = interaction.client.users.cache.find(user => user.id === userID);
-		console.log(userObj.id);
-		if(userObj.id != '1144772464623231067') {
-			await interaction.reply(userObj.displayAvatarURL());
-		} else {
-			await interaction.reply('Nah');
-		}
+		await interaction.reply(userObj.displayAvatarURL());
 	},
 };
