@@ -14,7 +14,6 @@ module.exports = {
 		),
 	async execute(interaction) {     
         const userID = interaction.user.id;
-		//userObj = interaction.client.users.cache.find(user => user.id === userID);
 		const input = interaction.options.getInteger('number');
         if(privledgedUsers.includes(interaction.user.id)) {
 			if(input < 1){
