@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path')
+const Sequelize = require('sequelize');
 const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
 require('dotenv').config();
 
@@ -35,15 +36,39 @@ for (const folder of commandFolders) {
 		}
 	}
 }
-
+//slash commands
 client.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isChatInputCommand()) return;
 
 	const command = interaction.client.commands.get(interaction.commandName);
+	const { commandName } = interaction;
 
 	if (!command) {
 		console.error(`No command matching ${interaction.commandName} was found.`);
 		return;
+	}
+
+	if (commandName === 'addtag') {
+		const tagName = interaction.options.getString('name');
+		const tagDescription = interaction.options.getString('description');
+
+		try {
+			// equivalent to: INSERT INTO tags (name, description, username) values (?, ?, ?);
+			const tag = await Tags.create({
+				name: tagName,
+				description: tagDescription,
+				username: interaction.user.username,
+			});
+
+			return interaction.reply(`Tag ${tag.name} added.`);
+		}
+		catch (error) {
+			if (error.name === 'SequelizeUniqueConstraintError') {
+				return interaction.reply('That tag already exists.');
+			}
+
+			return interaction.reply('Something went wrong with adding a tag.');
+		}
 	}
 
 	try {
@@ -57,5 +82,6 @@ client.on(Events.InteractionCreate, async interaction => {
 		}
 	}
 });
+
 
 client.login(process.env.TOKEN);

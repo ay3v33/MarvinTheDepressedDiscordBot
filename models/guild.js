@@ -2,14 +2,15 @@ const Sequelize = require('sequelize');
 const sequelize = require('../utils/database');
 
 const Guild = sequelize.define('guild', {
-    img:{
+
+    id: {
         type: Sequelize.STRING,
         primaryKey: true
     },
-    tag: {
+    username: {
         type: Sequelize.STRING,
         allowNull: false
-    },
-});
+    }
+})
 
 module.exports = Guild;
