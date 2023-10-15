@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, GuildExplicitContentFilter } = require('discord.js');
 require('dotenv').config();
-const privledgedUsers = [process.env.ME, process.env.JORDAN];
+const privledgedUsers = [process.env.ME, process.env.JORDAN, process.env.ED];
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -12,9 +12,7 @@ module.exports = {
 				.setDescription('The number of chats to be deleted')
 				.setRequired(true)
 		),
-	async execute(interaction) {     
-        const userID = interaction.user.id;
-		//userObj = interaction.client.users.cache.find(user => user.id === userID);
+	async execute(interaction) {
 		const input = interaction.options.getInteger('number');
         if(privledgedUsers.includes(interaction.user.id)) {
 			if(input < 1){
@@ -31,7 +29,7 @@ module.exports = {
             	});
         	}
 		} else {
-			interaction.reply(`You don't have the privelege to do this command pal`);
+			interaction.reply(`You can't do that pal`);
 		}
 	},
 };
