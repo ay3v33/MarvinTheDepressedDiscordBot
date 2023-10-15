@@ -8,7 +8,7 @@ module.exports = {
 		.addUserOption(option =>
 			option
 				.setName('target')
-				.setDescription('The users avatar you want to print')
+				.setDescription('The users avatar you want to print.')
 				.setRequired(true)
 		),
 	async execute(interaction) {
