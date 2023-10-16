@@ -20,20 +20,24 @@ module.exports = {
 	async execute(interaction) {
 		//const imglink = 'test'
         const phrase = interaction.options.getString('phrase');
-		const phraseCheck = await Guild.findOne({ where: { phrase: phrase } });
+		const data = await Guild.findOne({ where: { phrase: phrase } });
+		let phraseCheck = '';
+		if(data != null) {
+			phraseCheck = data.dataValues.phrase;
+		}
 		let msgarr = [];
 		let count = interaction.options.getInteger('countup');
 		let msgcontent = '';
 		let urssentid = '';
 
 		
-		if(phrase != phraseCheck.dataValues.phrase && count<50) {
+		if(phrase != phraseCheck && count<50) {
 
 			interaction.channel.messages.fetch().then(async (messages) => {
 				msgarr = Array.from(messages.values());
 				msgcontent = msgarr[count-1].content;
 				urssentid = msgarr[count-1].author.id;
-				await Guild.findOrCreate({where: {userid: interaction.user.id, username: interaction.user.username, imglink: msgcontent, phrase: phrase, usersentid: urssentid}});
+				await Guild.findOrCreate({where: {userid: interaction.user.id, username: interaction.user.username, imglink: msgcontent, phrase: phrase, usersentid: urssentid, public: true}});
 			});
 			
 			
