@@ -26,7 +26,8 @@ module.exports = {
 		let msgcontent = '';
 		let urssentid = '';
 
-		if(phrase != phraseCheck && count<50) {
+		
+		if(phrase != phraseCheck.dataValues.phrase && count<50) {
 
 			interaction.channel.messages.fetch().then(async (messages) => {
 				msgarr = Array.from(messages.values());
