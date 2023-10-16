@@ -18,6 +18,10 @@ const Guild = sequelize.define('guild', {
     phrase: {
         type: Sequelize.STRING,
         primaryKey: true
+    },
+    usersentid: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
 })
 

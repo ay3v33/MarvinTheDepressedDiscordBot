@@ -3,7 +3,7 @@ const Guild = require('../../models/guild');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('saveimg')
+		.setName('savemsg')
 		.setDescription('saves imglink')
         .addIntegerOption(option =>
 			option
@@ -24,18 +24,19 @@ module.exports = {
 		let msgarr = [];
 		let count = interaction.options.getInteger('countup');
 		let msgcontent = '';
+		let urssentid = '';
 
 		if(phrase != phraseCheck && count<50) {
 
-			interaction.channel.messages.fetch().then((messages) => {
-				//console.log(interaction.user.username);
+			interaction.channel.messages.fetch().then(async (messages) => {
 				msgarr = Array.from(messages.values());
 				msgcontent = msgarr[count-1].content;
-				console.log(msgcontent);
-				
+				urssentid = msgarr[count-1].author.id;
+				await Guild.findOrCreate({where: {userid: interaction.user.id, username: interaction.user.username, imglink: msgcontent, phrase: phrase, usersentid: urssentid}});
 			});
-			//await Guild.findOrCreate({where: {tag: tag, img: img}});
-			interaction.reply(`Image url saved as ${phrase}`);
+			
+			
+			interaction.reply(`Message saved as ${phrase}`);
 
 			
 		} else if(count >= 50) {
