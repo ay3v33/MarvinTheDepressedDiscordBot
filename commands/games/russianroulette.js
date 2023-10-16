@@ -16,7 +16,7 @@ module.exports = {
         if(chamber == 3) {
             await interaction.reply('You died');
         } else {
-            await interaction.reply('You survivded');
+            await interaction.reply('You survived');
         }
 	},
 };

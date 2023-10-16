@@ -3,8 +3,8 @@ const Guild = require('../../models/guild');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('grab')
-		.setDescription('Grabs message from database.')
+		.setName('post')
+		.setDescription('Post a message from database.')
 		.addStringOption(option =>
 			option
 				.setName('phrase')
@@ -16,12 +16,19 @@ module.exports = {
 		const data = await Guild.findOne({ where: { phrase: phraseOp } });
 		let msglink = '';
 		let public = '';
+		let usrsentid = '';
+		let usrsent = '';
+		let createdAt = '';
 
 		if(data != null) {
+			usrsentid = data.dataValues.usersentid;
+			usrsent = interaction.client.users.cache.find(user => user.id === usrsentid);
+			let createdAt = data.dataValues.createdAt;
 			msglink = data.dataValues.imglink;
 			public = data.dataValues.public;
+			createdAt = createdAt.toString();
 			if(public) {
-				await interaction.reply(msglink);
+				await interaction.reply(`${msglink} - ${usrsent} on ${createdAt.slice(0, 15)}`);
 			}
 			else {
 				await interaction.reply('Access denied buster!');
