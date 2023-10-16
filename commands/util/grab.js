@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const Sequelize = require('sequelize');
+const Guild = require('../../models/guild');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -12,7 +12,23 @@ module.exports = {
 				.setRequired(true)
 		),
 	async execute(interaction) {
-		
-		await interaction.reply('in progress');
+		const phraseOp = interaction.options.getString('phrase');
+		const data = await Guild.findOne({ where: { phrase: phraseOp } });
+		let msglink = '';
+		let public = '';
+
+		if(data != null) {
+			msglink = data.dataValues.imglink;
+			public = data.dataValues.public;
+			if(public) {
+				await interaction.reply(msglink);
+			}
+			else {
+				await interaction.reply('Access denied buster!');
+			}
+		}
+		else {
+			await interaction.reply('This phrase doesn\'t exist bozo.');
+		}
 	},
 };

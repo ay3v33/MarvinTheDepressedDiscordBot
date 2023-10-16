@@ -22,6 +22,10 @@ const Guild = sequelize.define('guild', {
     usersentid: {
         type: Sequelize.STRING,
         allowNull: false
+    },
+    public: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
     }
 })
 
