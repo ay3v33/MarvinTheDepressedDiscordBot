@@ -3,13 +3,21 @@ const sequelize = require('../utils/database');
 
 const Guild = sequelize.define('guild', {
 
-    id: {
+    userid: {
         type: Sequelize.STRING,
-        primaryKey: true
+        allowNull: false
     },
     username: {
         type: Sequelize.STRING,
         allowNull: false
+    },
+    imglink: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    phrase: {
+        type: Sequelize.STRING,
+        primaryKey: true
     }
 })
 
