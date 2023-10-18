@@ -15,7 +15,6 @@ module.exports = {
 		const phraseOp = interaction.options.getString('phrase');
 		const data = await Guild.findOne({ where: { phrase: phraseOp } });
 		let msglink = '';
-		let public = '';
 		let usrsentid = '';
 		let usrsent = '';
 		let createdAt = '';
@@ -25,14 +24,8 @@ module.exports = {
 			usrsent = interaction.client.users.cache.find(user => user.id === usrsentid);
 			let createdAt = data.dataValues.createdAt;
 			msglink = data.dataValues.imglink;
-			public = data.dataValues.public;
 			createdAt = createdAt.toString();
-			if(public) {
-				await interaction.reply(`${msglink} - ${usrsent} on ${createdAt.slice(0, 15)}`);
-			}
-			else {
-				await interaction.reply('Access denied buster!');
-			}
+			await interaction.reply(`${msglink} - ${usrsent} on ${createdAt.slice(0, 15)}`);
 		}
 		else {
 			await interaction.reply('This phrase doesn\'t exist bozo.');
