@@ -27,12 +27,8 @@ module.exports = {
 			msglink = data.dataValues.imglink;
 			public = data.dataValues.public;
 			createdAt = createdAt.toString();
-			if(public) {
-				await interaction.reply(`${msglink} - ${usrsent} on ${createdAt.slice(0, 15)}`);
-			}
-			else {
-				await interaction.reply('Access denied buster!');
-			}
+			await interaction.reply(`${msglink} - ${usrsent} \nSaved on ${createdAt.slice(0, 15)}`);
+
 		}
 		else {
 			await interaction.reply('This phrase doesn\'t exist bozo.');

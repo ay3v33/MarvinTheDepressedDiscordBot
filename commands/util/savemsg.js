@@ -37,7 +37,7 @@ module.exports = {
 				msgarr = Array.from(messages.values());
 				msgcontent = msgarr[count-1].content;
 				urssentid = msgarr[count-1].author.id;
-				await Guild.findOrCreate({where: {userid: interaction.user.id, username: interaction.user.username, imglink: msgcontent, phrase: phrase, usersentid: urssentid, public: true}});
+				await Guild.findOrCreate({where: {userid: interaction.user.id, username: interaction.user.username, imglink: msgcontent, phrase: phrase, usersentid: urssentid}});
 			});
 			
 			
