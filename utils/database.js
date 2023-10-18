@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
+require('dotenv').config();
 
-
-const sequelize = new Sequelize('database', 'user', 'password', {
+const sequelize = new Sequelize('database', process.env.USER, process.env.PASS, {
     dialect: 'sqlite',
     host: 'localhost',
     logging: false,
