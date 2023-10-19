@@ -21,7 +21,7 @@ module.exports = {
 			usrperm = data.dataValues.userid
 			if(usrperm == user){
 				data.destroy();
-				await interaction.reply(phrase + ' was removed from database.');
+				await interaction.reply(phrase + ' no longer exists.');
 			}
 			else {
 				await interaction.reply('Access denied!');

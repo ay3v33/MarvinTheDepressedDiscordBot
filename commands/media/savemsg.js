@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, GuildExplicitContentFilter } = require('discord.js');
+const { SlashCommandBuilder } = require('discord.js');
 const Guild = require('../../models/guild');
 
 module.exports = {
