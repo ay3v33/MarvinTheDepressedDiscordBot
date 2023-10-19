@@ -1,5 +1,4 @@
 # MarvinTheDepressedDiscordBot
-Marvin
 -------------------
 # Requirements
 - node.js
