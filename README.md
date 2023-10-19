@@ -1,12 +1,12 @@
 # MarvinTheDepressedDiscordBot
 Marvin
 -------------------
-#Requirements
+# Requirements
 - node.js
 - discord.js
 - sequelize
 -------------------
-#TO-DO
+# TO-DO
 - Currency System
   - ways to earn:
     - Daily's
