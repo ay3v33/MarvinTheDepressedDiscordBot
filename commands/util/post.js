@@ -25,7 +25,7 @@ module.exports = {
 			let createdAt = data.dataValues.createdAt;
 			msglink = data.dataValues.imglink;
 			createdAt = createdAt.toString();
-			await interaction.reply(`${msglink} - ${usrsent} on ${createdAt.slice(0, 15)}`);
+			await interaction.reply(`${msglink} - ${usrsent} \nSaved on ${createdAt.slice(0, 15)}`);
 		}
 		else {
 			await interaction.reply('This phrase doesn\'t exist bozo.');
