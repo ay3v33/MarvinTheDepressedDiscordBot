@@ -3,6 +3,7 @@
 - node.js
 - discord.js
 - sequelize
+- parse-ms-2
 -------------------
 # TO-DO
 - Currency System
