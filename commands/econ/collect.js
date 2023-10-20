@@ -11,9 +11,12 @@ module.exports = {
 	async execute(interaction, profileData) {
         const userid = interaction.user.id;
         const data = await Econ.findOne({ where: { userid: userid } });
-        const dailyLastUsed = data.lastDailyCollected;
+        let dailyLastUsed = data.lastDailyCollected;
         const cooldown = 86400000;
-        const timeLeft = cooldown - (Date.now() - dailyLastUsed);
+        let timeLeft = 0;
+        if(dailyLastUsed != null){
+            timeLeft = cooldown - (Date.now() - dailyLastUsed);
+        }
         if(timeLeft > 0) {
             await interaction.deferReply({ephemeral: true});
             const { hours, minutes, seconds } = parsem(timeLeft);
@@ -25,7 +28,7 @@ module.exports = {
                 data.schmeckels += randAmt;
                 data.lastDailyCollected = Date.now();
                 await data.save();
-                await interaction.editReply(`You collected ${randAmt}`);
+                await interaction.editReply(`You collected ${randAmt} schmeckels`);
             } catch {
                 console.log(err);
             }

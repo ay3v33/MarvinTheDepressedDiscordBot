@@ -1,42 +1,26 @@
 const Econ = require('./models/econ');
 require('dotenv').config();
 
-//Run each method one at a time
+//Manually add to db
+const add = (id, database, username) => {
+    database.findOrCreate({
+        where: {userid: 'placeholder'},
+        defaults: {
+            userid: id,
+            username: username, 
+            schmeckels: 500,
+        }
+    });
+}
 
-/*
-Econ.findOrCreate({
-    where: {userid: 'l'},
-    defaults: {
-        userid: process.env.ME,
-        username: 'adnvanv', 
-        schmeckels: 500,
-    }
-});
+//add();
 
-Econ.findOrCreate({
-    where: {userid: 'l'},
-    defaults: {
-        userid: process.env.JORDAN,
-        username: 'MadAdventures',
-        schmeckels: 500,
-    }
-});
 
-Econ.findOrCreate({
-    where: {userid: 'l'},
-    defaults: {
-        userid: process.env.ED,
-        username: 'TheDeviousBread',
-        schmeckels: 500,
-    }
-});
 
-Econ.findOrCreate({
-    where: {userid: 'l'},
-    defaults: {
-        userid: process.env.JAKE,
-        username: 'Jake C.',
-        schmeckels: 500,
-    }
-});
-*/
+
+//manually remove
+const remove = async (id, database) => {
+    const data = await database.findOne({ where: { userid: id } });
+    data.destroy();
+}
+//remove();
