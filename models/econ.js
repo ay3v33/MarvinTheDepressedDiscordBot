@@ -18,6 +18,10 @@ const Econ = sequelize.define('econ', {
         type: Sequelize.DATE,
         allowNull: true
     },
+    castsLeft: {
+        type: Sequelize.DATE,
+        allowNull: true
+    },
 })
 
 module.exports = Econ;
