@@ -1,8 +1,11 @@
 const fs = require('fs');
 const path = require('path')
-const Sequelize = require('sequelize');
 const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
 require('dotenv').config();
+const dbmethods = require('./editDB');
+const Econ = require('./models/econ');
+const internal = require('stream');
+
 
 const client = new Client({ 
     intents: [
@@ -15,6 +18,15 @@ const client = new Client({
 
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.on('guildMemberAdd', member => {
+	
+	dbmethods.add(member.user.id, Econ, member.user.username);
+});
+
+client.on('guildMemberRemove', member => {
+	dbmethods.remove(member.user.id, Econ);
 });
 
 client.commands = new Collection();
@@ -82,6 +94,5 @@ client.on(Events.InteractionCreate, async interaction => {
 		}
 	}
 });
-
 
 client.login(process.env.TOKEN);

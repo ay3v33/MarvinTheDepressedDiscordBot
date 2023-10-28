@@ -18,6 +18,10 @@ const Econ = sequelize.define('econ', {
         type: Sequelize.DATE,
         allowNull: true
     },
+    lastDailyCollected: {
+        type: Sequelize.ARRAY(Sequelize.INTEGER),
+        allowNull: true
+    },
 })
 
 module.exports = Econ;
