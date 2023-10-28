@@ -1,27 +1,22 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../utils/database');
 
-const Guild = sequelize.define('fish', {
-    id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true
-    },
+const Fish = sequelize.define('fish', {
     name: {
         type: Sequelize.STRING,
         allowNull: false
     },
     image: {
         type: Sequelize.BLOB,
-        allowNull: false
     },
     rarity: {
         type: Sequelize.DOUBLE,
         allowNull: false
     },
     value: {
-        type: Sequelize.DOUBLE,
+        type: Sequelize.INTEGER,
         allowNull: false
     },
 })
 
-module.exports = Guild;
+module.exports = Fish;
