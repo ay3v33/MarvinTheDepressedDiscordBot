@@ -1,15 +1,13 @@
 # MarvinTheDepressedDiscordBot
+- Just a media bot
 # Requirements
 - node.js
 - discord.js
 - sequelize
 - parse-ms-2
+- Puppeteer
 -------------------
-# TO-DO
-- Currency System
-  - ways to earn:
-    - Daily's
-    - Gambling
-    - Interacting
-  - fishing
-- Custom OC on join
+# Main Features
+- Sends twitter video links as videos
+- Save messages made by others with a keyword to access them later 
+- basic cmds and minigames

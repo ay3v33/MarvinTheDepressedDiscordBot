@@ -1,5 +1,4 @@
 const Guild = require('./models/guild');
-const Fish = require('./models/fish');
 const Econ = require('./models/econ');
 
 //Fish.sync({force: true}); //resets database

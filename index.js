@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path')
-const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, Events, GatewayIntentBits, Collection, MessageAttachment } = require('discord.js');
 require('dotenv').config();
 const dbmethods = require('./editDB');
 const Econ = require('./models/econ');
-const internal = require('stream');
-
+const { getXMedia, sendXMedia, deleteMedia } = require('./socialMediaGrabbers/x.js');
+const { match } = require('assert');
 
 const client = new Client({ 
     intents: [
@@ -24,6 +24,36 @@ client.on('guildMemberAdd', member => {
 	
 	dbmethods.add(member.user.id, Econ, member.user.username);
 });
+
+client.on('messageCreate', async msg => {
+	const urlRegex = /(https?:\/\/[^\s]+)/gi;
+	const messageContent = msg.content;
+	const matchedLinks = messageContent.match(urlRegex);
+	
+	try {
+		for(let i=0;i<matchedLinks.length;i++) {
+			if(matchedLinks[i].startsWith('https://twitter.com') || matchedLinks[i].startsWith('https://x.com')) {
+				getXMedia(matchedLinks[i]);
+				await new Promise(r => setTimeout(r, 6250));
+				const flpth = await sendXMedia();
+				await msg.channel.send({
+					content:
+						``,
+					files: [flpth]
+				}).catch((err) => {
+					 console.log("Error during Export File " + err);
+				});
+				
+				deleteMedia();
+				await new Promise(r => setTimeout(r, 10000));
+			}
+		}
+		msg.delete();
+		
+	} catch (err) {
+        
+    }
+})
 
 client.on('guildMemberRemove', member => {
 	dbmethods.remove(member.user.id, Econ);

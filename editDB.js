@@ -1,4 +1,3 @@
-const { data } = require('./commands/games/blackjack');
 const Econ = require('./models/econ');
 const Guild = require('./models/guild');
 require('dotenv').config();
