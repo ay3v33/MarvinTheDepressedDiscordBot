@@ -1,10 +1,9 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
-const { MessageAttachment, EmbedBuilder } = require('discord.js');
 
 
-const getXMedia = (link) => {
+const getXMedia = link => {
     (async () => {
         
         const browser = await puppeteer.launch({ headless: false });
@@ -14,7 +13,7 @@ const getXMedia = (link) => {
 
         async function waitUntilDownload(page, fileName = '') {
             return new Promise((resolve, reject) => {
-                page._client().on('Page.downloadProgress', e => { // or 'Browser.downloadProgress'
+                page._client().on('Page.downloadProgress', e => {
                     if (e.state === 'completed') {
                         resolve(fileName);
                     } else if (e.state === 'canceled') {
@@ -38,7 +37,7 @@ const getXMedia = (link) => {
             await page.waitForSelector(button);
             await page.type(textbox, link);
             await page.click(button);
-            
+
             await page.waitForSelector(downloadBtn);
             console.log('download link found');
             page.click(downloadBtn);

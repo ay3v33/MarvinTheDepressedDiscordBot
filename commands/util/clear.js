@@ -22,13 +22,21 @@ module.exports = {
 				interaction.reply(`I'm not deleting ${input} messages buddy`);
 			} else {
 				interaction.channel.bulkDelete(input).then(() => {
-					if(input==1){
-						interaction.reply(`Deleting 1 message.`).then(msg => msg.delete(3000));
+					if (input == 1) {
+						interaction.reply(`Deleted message.`).then(reply => {
+							setTimeout(() => {
+								reply.delete();
+							}, 3000);
+						});
 					} else {
-						interaction.reply(`Deleting ${input} messages.`).then(msg => msg.delete(3000));
+						interaction.reply(`Deleted ${input} messages.`).then(reply => {
+							setTimeout(() => {
+								reply.delete();
+							}, 3000);
+						});
 					}
-            	});
-        	}
+				});
+			}
 		} else {
 			interaction.reply(`You can't do that pal`);
 		}

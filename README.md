@@ -4,7 +4,7 @@
 - node.js
 - discord.js
 - sequelize
-- parse-ms-2
+- dotenv
 - Puppeteer
 -------------------
 # Main Features
