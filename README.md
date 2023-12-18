@@ -1,4 +1,4 @@
-# MarvinTheDepressedDiscordBot
+# Marvin The Discord Bot
 - Just a media bot
 # Requirements
 - node.js
@@ -8,6 +8,6 @@
 - Puppeteer
 -------------------
 # Main Features
-- Sends twitter video links as videos
+- Sends twitter and tik tok video links as playable videos
 - Save messages made by others with a keyword to access them later 
-- basic cmds and minigames
+- basic commands and minigames
