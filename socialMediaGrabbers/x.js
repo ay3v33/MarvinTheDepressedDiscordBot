@@ -37,7 +37,7 @@ const getXMedia = (link) => {
                 });
             });
         }
-        
+
         try {
             await client.send('Page.setDownloadBehavior', {
                 behavior: 'allow',
@@ -57,8 +57,7 @@ const getXMedia = (link) => {
             console.log('download link found');
             await new Promise(r => setTimeout(r, 1000));
             await page.click(downloadBtn);
-            await new Promise(r => setTimeout(r, 2000));
-            await frame.click(dismissAd);
+            await new Promise(r => setTimeout(r, 1000));
             await waitUntilDownload(page,'temp');
             
         } catch (error) {
