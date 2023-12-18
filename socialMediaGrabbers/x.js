@@ -8,7 +8,23 @@ const getXMedia = (link) => {
         const browser = await puppeteer.launch({ headless: false });
         const page = await browser.newPage();
         const client = await page.target().createCDPSession();
-        
+        await page.setRequestInterception(true);
+
+        const rejectRequestPattern = [
+            "googlesyndication.com",
+            "/*.doubleclick.net",
+            "/*.amazon-adsystem.com",
+            "/*.adnxs.com",
+            "googleadservices.com",
+        ]
+        const blockList = [];
+
+        page.on("request", (request) => {
+            if (rejectRequestPattern.find((pattern) => request.url().match(pattern))) {
+              blockList.push(request.url());
+              request.abort();
+            } else request.continue();
+        });
 
         async function waitUntilDownload(page, fileName = '') {
             return new Promise((resolve, reject) => {
@@ -32,8 +48,6 @@ const getXMedia = (link) => {
             const button = '#submit';
             const textbox = '#main_page_text';
             const downloadBtn = '[class="pure-button pure-button-primary is-center u-bl dl-button download_link without_watermark vignette_active"]'
-            const dismissAd = '#dismiss-button';
-            const element = await page.$(dismissAd);
             await page.waitForSelector(textbox);
             await page.waitForSelector(button);
             await page.type(textbox, link);
@@ -41,12 +55,10 @@ const getXMedia = (link) => {
             await page.click(button);
             await page.waitForSelector(downloadBtn);
             console.log('download link found');
+            await new Promise(r => setTimeout(r, 1000));
             await page.click(downloadBtn);
-            if(element) {
-                await page.click(dismissAd);
-            }
-            //const iframeSelector = 'your_iframe_selector_here';
-            //await page.waitForSelector(iframeSelector, { visible: true, timeout: 4000});
+            await new Promise(r => setTimeout(r, 2000));
+            await frame.click(dismissAd);
             await waitUntilDownload(page,'temp');
             
         } catch (error) {

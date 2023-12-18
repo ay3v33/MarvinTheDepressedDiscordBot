@@ -2,13 +2,42 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 const destination = 'C:\\Users\\apvan\\OneDrive\\Desktop\\discordBot\\socialMediaGrabbers\\downloadedLinks';
-/*
+
 const getTokMedia = (link) => {
     (async () => {
-        const browser = await puppeteer.launch({ headless: false });
+        const browser = await puppeteer.launch({ headless: "new" });
         const page = await browser.newPage();
         const client = await page.target().createCDPSession();
+        await page.setRequestInterception(true);
+
+        const rejectRequestPattern = [
+            "googlesyndication.com",
+            "/*.doubleclick.net",
+            "/*.amazon-adsystem.com",
+            "/*.adnxs.com",
+            "googleadservices.com",
+        ]
+        const blockList = [];
+
+        page.on("request", (request) => {
+            if (rejectRequestPattern.find((pattern) => request.url().match(pattern))) {
+              blockList.push(request.url());
+              request.abort();
+            } else request.continue();
+        });
         
+        async function waitUntilDownload(page, fileName = '') {
+            return new Promise((resolve, reject) => {
+                page._client().on('Page.downloadProgress', e => {
+                    if (e.state === 'completed') {
+                        resolve(fileName);
+                    } else if (e.state === 'canceled') {
+                        reject();
+                    }
+                });
+            });
+        }
+
         try {
             await client.send('Page.setDownloadBehavior', {
                 behavior: 'allow',
@@ -27,25 +56,17 @@ const getTokMedia = (link) => {
             await page.waitForSelector(downloadBtn);
             await page.click(button);
             console.log('Video found');
-            await new Promise(r => setTimeout(r, 2000));
             await page.waitForSelector(downloadBtn2);
             await page.click(downloadBtn2);
             console.log('Download link found');
-            await new Promise(r => setTimeout(r, 500));
-            await page.click(downloadBtn2);
-            //const iframeSelector = 'your_iframe_selector_here';
-            //await page.waitForSelector(iframeSelector, { visible: true, timeout: 4000});
-            await page.waitForDownload();
-            await page.waitForSelector();
+            await waitUntilDownload(page, 'temp');
             
         } catch (error) {
             console.error('An error occurred:', error);
+        } finally {
+            await browser.close();
         }
     })();
-}*/
-
-const getTokMedia = () => {
-
 }
 
 const sendTokMedia = async () => {
