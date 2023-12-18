@@ -3,7 +3,10 @@ const path = require('path')
 const { Client, Events, GatewayIntentBits, Collection, } = require('discord.js');
 require('dotenv').config();
 const dbmethods = require('./editDB');
-const { getXMedia, sendXMedia, deleteMedia } = require('./socialMediaGrabbers/x.js');
+const { getXMedia, sendXMedia } = require('./socialMediaGrabbers/x.js');
+const { getTokMedia, sendTokMedia } = require('./socialMediaGrabbers/tt.js');
+const Queue = require('./socialMediaGrabbers/Queue.js');
+const queue = new Queue();
 
 const client = new Client({ 
     intents: [
@@ -11,7 +14,7 @@ const client = new Client({
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMembers,
-    ] 
+    ]
 });
 
 client.on('ready', () => {
@@ -19,38 +22,90 @@ client.on('ready', () => {
 });
 
 client.on('guildMemberAdd', member => {
-	
 	dbmethods.add(member.user.id, Econ, member.user.username);
 });
+
+const handleMedia = async (Q, msg) => {
+	for(let i=0;i<Q.size();i++) {
+		let flpth = '';
+		if(Q.front().startsWith('https://twitter.com') || Q.front().startsWith('https://x.com')) {
+			deleteMedia();
+			getXMedia(Q.front());
+			await new Promise(r => setTimeout(r, 6250));
+			flpth = await sendXMedia();
+			await msg.channel.send({
+				content:
+					``,
+				files: [flpth]
+			}).catch((err) => {
+				 console.log("Error during Export File " + err);
+			});
+		}
+		if(Q.front().startsWith('https://www.tiktok.com')) {
+		deleteMedia();
+		getTokMedia(Q.front());
+			await new Promise(r => setTimeout(r, 6250));
+			flpth = await sendTokMedia();
+			await msg.channel.send({
+				content:
+					``,
+				files: [flpth]
+			}).catch((err) => {
+				 console.log("Error during Export File " + err);
+			});
+		}
+		deleteMedia();
+		await new Promise(r => setTimeout(r, 10000));
+		console.log('waited 10');
+		Q.dequeue();
+		if(!Q.isEmpty()) {
+			handleMedia(Q, msg);
+		}
+	}
+}
+
+const deleteMedia = () => {
+	try {
+        const directoryPath = path.join(__dirname, 'socialMediaGrabbers', 'downloadedLinks');
+        const files = fs.readdirSync(directoryPath);
+
+        if (files.length === 0) {
+            console.log('No files to delete in the directory');
+            return;
+        }
+
+        files.forEach(file => {
+            const filePath = path.join(directoryPath, file);
+
+            fs.unlink(filePath, err => {
+                if (err) {
+                    console.error(`Error deleting the file ${file}:`, err);
+                } else {
+                    console.log(`File ${file} deleted successfully`);
+                }
+            });
+        });
+    } catch (error) {
+        console.error('Error deleting files:', error);
+    }
+}
 
 client.on('messageCreate', async msg => {
 	const urlRegex = /(https?:\/\/[^\s]+)/gi;
 	const messageContent = msg.content;
 	const matchedLinks = messageContent.match(urlRegex);
-	
 	try {
-		for(let i=0;i<matchedLinks.length;i++) {
-			if(matchedLinks[i].startsWith('https://twitter.com') || matchedLinks[i].startsWith('https://x.com')) {
-				getXMedia(matchedLinks[i]);
-				await new Promise(r => setTimeout(r, 6250));
-				const flpth = await sendXMedia();
-				await msg.channel.send({
-					content:
-						``,
-					files: [flpth]
-				}).catch((err) => {
-					 console.log("Error during Export File " + err);
-				});
-				
-				deleteMedia();
-				await new Promise(r => setTimeout(r, 10000));
+		if(matchedLinks != null) {
+			for(let i=0;i<matchedLinks.length;i++){
+				queue.enqueue(matchedLinks[i]);
+			}
+			if(queue.size() == 1) {
+				handleMedia(queue, msg);
 			}
 		}
-		msg.delete();
-		
 	} catch (err) {
-        
-    }
+		console.log(err);
+	}
 })
 
 client.on('guildMemberRemove', member => {

@@ -12,15 +12,6 @@ const add = (id, database, username) => {
                 schmeckels: 500,
             }
         });
-    } else if (database == Guild) {
-        database.findOrCreate({
-            where: {userid: null},
-            defaults: {
-                userid: id,
-                username: username,
-                schmeckels: 500,
-            }
-        });
     }
 }
 

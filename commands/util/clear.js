@@ -17,7 +17,7 @@ module.exports = {
 		const input = interaction.options.getInteger('number');
         if(privledgedUsers.includes(interaction.user.id)) {
 			if(input < 1){
-				interaction.reply(`Tf u mean delete ${input} messages.`);
+				interaction.reply(`What are you talking about`);
 			} else if(input > 50){
 				interaction.reply(`I'm not deleting ${input} messages buddy`);
 			} else {
@@ -26,13 +26,13 @@ module.exports = {
 						interaction.reply(`Deleted message.`).then(reply => {
 							setTimeout(() => {
 								reply.delete();
-							}, 3000);
+							}, 2000);
 						});
 					} else {
 						interaction.reply(`Deleted ${input} messages.`).then(reply => {
 							setTimeout(() => {
 								reply.delete();
-							}, 3000);
+							}, 2000);
 						});
 					}
 				});

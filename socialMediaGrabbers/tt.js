@@ -2,62 +2,53 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 const destination = 'C:\\Users\\apvan\\OneDrive\\Desktop\\discordBot\\socialMediaGrabbers\\downloadedLinks';
-
-const getXMedia = (link) => {
+/*
+const getTokMedia = (link) => {
     (async () => {
         const browser = await puppeteer.launch({ headless: false });
         const page = await browser.newPage();
         const client = await page.target().createCDPSession();
-        
-
-        async function waitUntilDownload(page, fileName = '') {
-            return new Promise((resolve, reject) => {
-                page._client().on('Page.downloadProgress', e => {
-                    if (e.state === 'completed') {
-                        resolve(fileName);
-                    } else if (e.state === 'canceled') {
-                        reject();
-                    }
-                });
-            });
-        }
         
         try {
             await client.send('Page.setDownloadBehavior', {
                 behavior: 'allow',
                 downloadPath: destination,
             })
-            await page.goto('https://ssstwitter.com/', { waitUntil: 'domcontentloaded' });
+            await page.goto('https://snaptik.app/', { waitUntil: 'domcontentloaded' });
             await page.setViewport({ width: 1200, height: 800 });
-            const button = '#submit';
-            const textbox = '#main_page_text';
-            const downloadBtn = '[class="pure-button pure-button-primary is-center u-bl dl-button download_link without_watermark vignette_active"]'
-            const dismissAd = '#dismiss-button';
-            const element = await page.$(dismissAd);
+            const button = '[class="button button-go is-link transition-all"]';
+            const textbox = '[class="link-input"]';
+            const downloadBtn = '[class="button button-go is-link transition-all"]';
+            const downloadBtn2 = '[class="button download-file"]'
             await page.waitForSelector(textbox);
             await page.waitForSelector(button);
             await page.type(textbox, link);
-            await new Promise(r => setTimeout(r, 500));
-            await page.click(button);
+            await new Promise(r => setTimeout(r, 1000));
             await page.waitForSelector(downloadBtn);
-            console.log('download link found');
-            await page.click(downloadBtn);
-            if(element) {
-                await page.click(dismissAd);
-            }
+            await page.click(button);
+            console.log('Video found');
+            await new Promise(r => setTimeout(r, 2000));
+            await page.waitForSelector(downloadBtn2);
+            await page.click(downloadBtn2);
+            console.log('Download link found');
+            await new Promise(r => setTimeout(r, 500));
+            await page.click(downloadBtn2);
             //const iframeSelector = 'your_iframe_selector_here';
             //await page.waitForSelector(iframeSelector, { visible: true, timeout: 4000});
-            await waitUntilDownload(page,'temp');
+            await page.waitForDownload();
+            await page.waitForSelector();
             
         } catch (error) {
             console.error('An error occurred:', error);
-        } finally {
-            await browser.close();
         }
     })();
+}*/
+
+const getTokMedia = () => {
+
 }
 
-const sendXMedia = async () => {
+const sendTokMedia = async () => {
     try {
         const directoryPath = __dirname+'\\downloadedLinks'; // Gets the current directory of the script
         const files = fs.readdirSync(directoryPath);
@@ -81,6 +72,6 @@ const sendXMedia = async () => {
 
 
 module.exports = {
-    getXMedia,
-    sendXMedia
+    getTokMedia,
+    sendTokMedia
 }

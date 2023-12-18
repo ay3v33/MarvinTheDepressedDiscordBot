@@ -32,7 +32,7 @@ module.exports = {
             }
         }
         else{
-            interaction.reply('That phrase doesn\'t exist fool');
+            interaction.reply('That phrase doesn\'t exist');
         }
 	},
 };
