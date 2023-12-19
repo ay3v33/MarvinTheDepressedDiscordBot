@@ -57,7 +57,6 @@ const getXMedia = (link) => {
             console.log('download link found');
             await new Promise(r => setTimeout(r, 1000));
             await page.click(downloadBtn);
-            await new Promise(r => setTimeout(r, 1000));
             await waitUntilDownload(page,'temp');
             
         } catch (error) {
