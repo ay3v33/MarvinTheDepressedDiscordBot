@@ -26,41 +26,41 @@ client.on('guildMemberAdd', member => {
 });
 
 const handleMedia = async (Q, msg) => {
-	for(let i=0;i<Q.size();i++) {
-		let flpth = '';
-		if(Q.front().startsWith('https://twitter.com') || Q.front().startsWith('https://x.com')) {
-			deleteMedia();
-			getXMedia(Q.front());
-			await new Promise(r => setTimeout(r, 6250));
-			flpth = await sendXMedia();
-			await msg.channel.send({
-				content:
-					``,
-				files: [flpth]
-			}).catch((err) => {
-				 console.log("Error during Export File " + err);
-			});
-		}
-		if(Q.front().startsWith('https://www.tiktok.com')) {
+	//for(let i=0;i<Q.size();i++) {
+	let flpth = '';
+	if(Q.front().startsWith('https://twitter.com') || Q.front().startsWith('https://x.com')) {
 		deleteMedia();
-		getTokMedia(Q.front());
-			await new Promise(r => setTimeout(r, 6250));
-			flpth = await sendTokMedia();
-			await msg.channel.send({
-				content:
-					``,
-				files: [flpth]
-			}).catch((err) => {
-				 console.log("Error during Export File " + err);
-			});
-		}
-		deleteMedia();
-		await new Promise(r => setTimeout(r, 10000));
-		console.log('waited 10');
-		Q.dequeue();
-		if(!Q.isEmpty()) {
-			handleMedia(Q, msg);
-		}
+		getXMedia(Q.front());
+		await new Promise(r => setTimeout(r, 6250));
+		flpth = await sendXMedia();
+		await msg.channel.send({
+			content:
+				``,
+			files: [flpth]
+		}).catch((err) => {
+				console.log("Error during Export File " + err);
+		});
+	}
+	if(Q.front().startsWith('https://www.tiktok.com')) {
+	deleteMedia();
+	getTokMedia(Q.front());
+		await new Promise(r => setTimeout(r, 6250));
+		flpth = await sendTokMedia();
+		await msg.channel.send({
+			content:
+				``,
+			files: [flpth]
+		}).catch((err) => {
+				console.log("Error during Export File " + err);
+		});
+	}
+	deleteMedia();
+	await new Promise(r => setTimeout(r, 10000));
+	console.log('waited 10');
+	Q.dequeue();
+	if(!Q.isEmpty()) {
+		handleMedia(Q, msg);
+	//}
 	}
 }
 
@@ -99,18 +99,14 @@ client.on('messageCreate', async msg => {
 			for(let i=0;i<matchedLinks.length;i++){
 				queue.enqueue(matchedLinks[i]);
 			}
-			if(queue.size() == 1) {
-				handleMedia(queue, msg);
-			}
+			handleMedia(queue, msg);
 		}
 	} catch (err) {
 		console.log(err);
 	}
-	if(msg.author.id == process.env.ME) {
-		if(msg.content.substring(0,5) == 'clear') {
-			lastIndex = msg.content.substring(6, msg.content.length);
-			msg.channel.bulkDelete(lastIndex);
-		}
+	if(msg.author.id == process.env.ME && msg.content.substring(0,5) == 'clear') {
+		lastIndex = msg.content.substring(6, msg.content.length);
+		msg.channel.bulkDelete(lastIndex);
 	}
 })
 

@@ -58,7 +58,6 @@ const getXMedia = (link) => {
             await new Promise(r => setTimeout(r, 1000));
             await page.click(downloadBtn);
             await waitUntilDownload(page,'temp');
-            
         } catch (error) {
             console.error('An error occurred:', error);
         } finally {
