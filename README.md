@@ -1,5 +1,8 @@
 # Marvin The Discord Bot
-- Just a media bot
+- Media bot
+- Save messages and repost them with a chosen keyword
+- uploads playable videos from twitter and tik tok links (instagram coming soon)
+- basic games and commands included
 # Requirements
 - node.js
 - discord.js
