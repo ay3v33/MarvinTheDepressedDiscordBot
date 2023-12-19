@@ -106,6 +106,12 @@ client.on('messageCreate', async msg => {
 	} catch (err) {
 		console.log(err);
 	}
+	if(msg.author.id == process.env.ME) {
+		if(msg.content.substring(0,5) == 'clear') {
+			lastIndex = msg.content.substring(6, msg.content.length);
+			msg.channel.bulkDelete(lastIndex);
+		}
+	}
 })
 
 client.on('guildMemberRemove', member => {
