@@ -47,17 +47,15 @@ const getTokMedia = (link) => {
             await page.setViewport({ width: 1200, height: 800 });
             const button = '[class="button button-go is-link transition-all"]';
             const textbox = '[class="link-input"]';
-            const downloadBtn = '[class="button button-go is-link transition-all"]';
-            const downloadBtn2 = '[class="button download-file"]'
+            const downloadBtn = '[class="button download-file"]'
             await page.waitForSelector(textbox);
             await page.waitForSelector(button);
             await page.type(textbox, link);
             await new Promise(r => setTimeout(r, 1000));
-            await page.waitForSelector(downloadBtn);
             await page.click(button);
             console.log('Video found');
-            await page.waitForSelector(downloadBtn2);
-            await page.click(downloadBtn2);
+            await page.waitForSelector(downloadBtn);
+            await page.click(downloadBtn);
             console.log('Download link found');
             await waitUntilDownload(page, 'temp');
             

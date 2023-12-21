@@ -5,6 +5,7 @@ require('dotenv').config();
 const dbmethods = require('./editDB');
 const { getXMedia, sendXMedia } = require('./socialMediaGrabbers/x.js');
 const { getTokMedia, sendTokMedia } = require('./socialMediaGrabbers/tt.js');
+const { getIGMedia, sendIGMedia } = require('./socialMediaGrabbers/insta.js');
 const Queue = require('./socialMediaGrabbers/Queue.js');
 const queue = new Queue();
 
@@ -40,10 +41,9 @@ const handleMedia = async (Q, msg) => {
 		}).catch((err) => {
 				console.log("Error during Export File " + err);
 		});
-	}
-	if(Q.front().startsWith('https://www.tiktok.com')) {
-	deleteMedia();
-	getTokMedia(Q.front());
+	} else if(Q.front().startsWith('https://www.tiktok.com')) {
+		deleteMedia();
+		getTokMedia(Q.front());
 		await new Promise(r => setTimeout(r, 6250));
 		flpth = await sendTokMedia();
 		await msg.channel.send({
@@ -53,7 +53,20 @@ const handleMedia = async (Q, msg) => {
 		}).catch((err) => {
 				console.log("Error during Export File " + err);
 		});
+	} else if(Q.front().startsWith('https://www.instagram.com')) {
+		deleteMedia();
+		getIGMedia(Q.front());
+		await new Promise(r => setTimeout(r, 6250));
+		flpth = await sendIGMedia();
+		await msg.channel.send({
+			content:
+				``,
+			files: [flpth]
+		}).catch((err) => {
+				console.log("Error during Export File " + err);
+		});
 	}
+	
 	deleteMedia();
 	await new Promise(r => setTimeout(r, 10000));
 	console.log('waited 10');
@@ -105,8 +118,8 @@ client.on('messageCreate', async msg => {
 		console.log(err);
 	}
 	if(msg.author.id == process.env.ME && msg.content.substring(0,5) == 'clear') {
-		lastIndex = msg.content.substring(6, msg.content.length);
-		msg.channel.bulkDelete(lastIndex);
+		lastIndex = parseInt(msg.content.substring(6, msg.content.length));
+		msg.channel.bulkDelete(lastIndex+1);
 	}
 })
 
