@@ -1,12 +1,13 @@
 const fs = require('fs');
 const path = require('path')
-const { Client, Events, GatewayIntentBits, Collection, } = require('discord.js');
+const { Client, Events, GatewayIntentBits, Collection, ChannelType, } = require('discord.js');
 require('dotenv').config();
 const dbmethods = require('./editDB');
 const { getXMedia, sendXMedia } = require('./socialMediaGrabbers/x.js');
 const { getTokMedia, sendTokMedia } = require('./socialMediaGrabbers/tt.js');
 const { getIGMedia, sendIGMedia } = require('./socialMediaGrabbers/insta.js');
 const Queue = require('./socialMediaGrabbers/Queue.js');
+const { channel } = require('diagnostics_channel');
 const queue = new Queue();
 
 const client = new Client({ 
@@ -117,9 +118,26 @@ client.on('messageCreate', async msg => {
 	} catch (err) {
 		console.log(err);
 	}
-	if(msg.author.id == process.env.ME && msg.content.substring(0,5) == 'clear') {
-		lastIndex = parseInt(msg.content.substring(6, msg.content.length));
-		msg.channel.bulkDelete(lastIndex+1);
+	if(msg.author.id == process.env.ME) {
+		if(msg.content.substring(0,5) == 'clear') {
+			lastIndex = parseInt(msg.content.substring(6, msg.content.length));
+			msg.channel.bulkDelete(lastIndex+1);
+		} else if(msg.content.substring(0,4) == 'make' && msg.content.substring(msg.content.length-7,msg.content.length) == 'channel') {
+			let channelName = msg.content.substring(5,msg.content.length-7);
+			try {
+				const createdChannel = await msg.guild.channels.create({
+					name: channelName,
+					type: ChannelType.GuildText, // Specify the type of channel (text, voice, etc.)
+					// Add other options as needed (e.g., bitrate, user limit for voice channels)
+				});
+
+				msg.reply(`Channel created: ${createdChannel}`);
+				} catch (error) {
+				console.error('Error creating channel:', error);
+				msg.reply('There was an error creating the channel.');
+			}
+		}
+
 	}
 })
 
