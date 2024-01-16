@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path')
-const { Client, Events, GatewayIntentBits, Collection, ChannelType, } = require('discord.js');
+const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
 require('dotenv').config();
 const dbmethods = require('./editDB');
 const { getXMedia, sendXMedia } = require('./socialMediaGrabbers/x.js');
@@ -20,10 +20,6 @@ const client = new Client({
 
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
-});
-
-client.on('guildMemberAdd', member => {
-	dbmethods.add(member.user.id, Econ, member.user.username);
 });
 
 const handleMedia = async (Q, msg) => {
