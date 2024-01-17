@@ -1,6 +1,5 @@
-/*
-const { SlashCommandBuilder, RoleManager } = require('discord.js');
-require('dotenv').config();
+
+const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -15,15 +14,8 @@ module.exports = {
 
 	async execute(interaction) {
 		const input = interaction.options.getInteger('number');
-        if(true) {
-
-
-
-			console.log(interaction.roles);
-			//console.log(member.permissions.has(Permissions.FLAGS.ADMINISTRATOR));
-
-
-
+		
+		if(interaction.member.permissions.has("Administrator")) {
 			if(input < 1){
 				interaction.reply(`What are you talking about`);
 			} else if(input > 50){
@@ -50,4 +42,3 @@ module.exports = {
 		}
 	},
 };
-*/
