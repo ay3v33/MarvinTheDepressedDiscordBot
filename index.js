@@ -9,6 +9,7 @@ const { getIGMedia, sendIGMedia } = require('./socialMediaGrabbers/insta.js');
 const Queue = require('./socialMediaGrabbers/Queue.js');
 const queue = new Queue();
 
+
 const client = new Client({ 
     intents: [
         GatewayIntentBits.Guilds,
