@@ -16,6 +16,7 @@ const client = new Client({
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildVoiceStates,
     ]
 });
 
@@ -24,7 +25,6 @@ client.on('ready', () => {
 });
 
 const handleMedia = async (Q, msg) => {
-	//for(let i=0;i<Q.size();i++) {
 	let flpth = '';
 	if(Q.front().startsWith('https://twitter.com') || Q.front().startsWith('https://x.com')) {
 		deleteMedia();
@@ -70,7 +70,6 @@ const handleMedia = async (Q, msg) => {
 	Q.dequeue();
 	if(!Q.isEmpty()) {
 		handleMedia(Q, msg);
-	//}
 	}
 }
 
@@ -105,7 +104,7 @@ client.on('messageCreate', async msg => {
 	const messageContent = msg.content;
 	const matchedLinks = messageContent.match(urlRegex);
 	try {
-		if(matchedLinks != null) {
+		if(matchedLinks != null && msg.content[0] == '/') {
 			for(let i=0;i<matchedLinks.length;i++){
 				queue.enqueue(matchedLinks[i]);
 			}
@@ -114,6 +113,22 @@ client.on('messageCreate', async msg => {
 	} catch (err) {
 		console.log(err);
 	}
+
+	if(msg.content.substring(2,21) == '1196651925224046622' && msg.content.includes('join vc')) {
+		console.log('yes');
+		if (msg.member.voice.channel) {
+			try {
+			  // Join the user's voice channel
+			  const connection = await msg.member.voice.channel
+			  console.log(connection);
+			} catch(err) {
+				console.log(err);
+			}
+		  } else {
+			message.reply('You need to be in a voice channel to use this command!');
+		  }
+	}
+
 })
 
 client.on('guildMemberRemove', member => {

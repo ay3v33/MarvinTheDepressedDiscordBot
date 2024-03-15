@@ -37,7 +37,6 @@ module.exports = {
 		let urssentid = '';
 		if(phrase != phraseCheck) {
 			if(countAsInt<10) {
-
 				interaction.channel.messages.fetch().then(async (messages) => {
 					msgarr = Array.from(messages.values());
 					msgcontent = msgarr[count-1].content;
@@ -47,10 +46,9 @@ module.exports = {
 				
 				interaction.reply(`Message saved as ${phrase}`);
 			} else if(countAsInt >= 10) {
-				console.log(count);
 				try {
 					const fetchedMessage = await interaction.channel.messages.fetch(count);
-					await Guild.findOrCreate({where: {userid: interaction.user.id, username: interaction.user.username, imglink: fetchedMessage.content, phrase: phrase, usersentid: urssentid}});
+					await Guild.findOrCreate({where: {userid: interaction.user.id, username: interaction.user.username, imglink: fetchedMessage.content, phrase: phrase, usersentid: fetchedMessage.author.username}});
 					interaction.reply(`Message saved as ${phrase}`);
 				} catch (err) {
 					console.log(err);
