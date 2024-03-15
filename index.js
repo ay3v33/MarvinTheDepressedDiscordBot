@@ -8,6 +8,7 @@ const { getTokMedia, sendTokMedia } = require('./socialMediaGrabbers/tt.js');
 const { getIGMedia, sendIGMedia } = require('./socialMediaGrabbers/insta.js');
 const Queue = require('./socialMediaGrabbers/Queue.js');
 const queue = new Queue();
+let atcount = 1;
 
 const client = new Client({ 
     intents: [
@@ -15,6 +16,7 @@ const client = new Client({
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildVoiceStates,
     ]
 });
 
@@ -23,7 +25,6 @@ client.on('ready', () => {
 });
 
 const handleMedia = async (Q, msg) => {
-	//for(let i=0;i<Q.size();i++) {
 	let flpth = '';
 	if(Q.front().startsWith('https://twitter.com') || Q.front().startsWith('https://x.com')) {
 		deleteMedia();
@@ -69,7 +70,6 @@ const handleMedia = async (Q, msg) => {
 	Q.dequeue();
 	if(!Q.isEmpty()) {
 		handleMedia(Q, msg);
-	//}
 	}
 }
 
@@ -99,12 +99,16 @@ const deleteMedia = () => {
     }
 }
 
+
 client.on('messageCreate', async msg => {
-	const urlRegex = /(https?:\/\/[^\s]+)/gi;
+	const urlRegex = /(?:^|\/)(https?:\/\/[^\s]+)/gi;
 	const messageContent = msg.content;
-	const matchedLinks = messageContent.match(urlRegex);
+	let matchedLinks = messageContent.match(urlRegex);
+	let linkmsg = false;
 	try {
-		if(matchedLinks != null) {
+		if(matchedLinks != null && msg.content[0] == '/') {
+			matchedLinks = matchedLinks.map(str => str.slice(1));
+			linkmsg = true;
 			for(let i=0;i<matchedLinks.length;i++){
 				queue.enqueue(matchedLinks[i]);
 			}
@@ -113,11 +117,32 @@ client.on('messageCreate', async msg => {
 	} catch (err) {
 		console.log(err);
 	}
+	let atted = false;
+	let username = '';
+	try {
+		atted = msg.content.includes('1160724436677308436');
+		username = msg.author.username;
+	} catch(err) {
+		console.log(err);
+	}
+	if(atted) {
+		let randnum = Math.floor(Math.random()*3);
+		try {
+			if(randnum == 0) {
+				replyMessage = ('stfu '+username);
+			} else if(randnum == 1) {
+				replyMessage = ('at me one more time and ur banned buster ;)');
+			} else if(randnum == 2) {
+				replyMessage = ('imbaatakuuuuuuuummmmmmmm');
+			}
+			msg.reply(replyMessage).catch(error => {
+                console.error('Failed to send reply:', error);
+            });
+		} catch (err) {
+			console.log(err);
+		}
+	}
 })
-
-client.on('guildMemberRemove', member => {
-	dbmethods.remove(member.user.id, Econ);
-});
 
 client.commands = new Collection();
 

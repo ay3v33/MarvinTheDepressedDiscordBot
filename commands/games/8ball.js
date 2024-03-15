@@ -15,6 +15,6 @@ module.exports = {
 	async execute(interaction) {
         const q = interaction.options.getString('question');
         let x = ['yes', 'no', 'it is certain', 'without a doubt', 'most likely', 'don\'t count on it', 'my sources say no', 'outlook not so good', 'reply hazy, try again', 'ask again later', 'cannot predict now', 'concentrate and ask again'];
-		await interaction.reply(x[randint(0, x.length-1)]);
+		await interaction.reply("Question: " + q + "? " + "8-ball response: " + x[randint(0, x.length-1)]);
 	},
 };

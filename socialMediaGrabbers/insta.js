@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
-const destination = 'C:\\Users\\apvan\\OneDrive\\Desktop\\discordBot\\socialMediaGrabbers\\downloadedLinks';
+const destination = 'C:\\Users\\NuggetCentral\\Documents\\discordBot\\socialMediaGrabbers\\downloadedLinks';
 
 const getIGMedia = (link) => {
     (async () => {

@@ -21,7 +21,7 @@ module.exports = {
 
 		if(data != null) {
 			usrsentid = data.dataValues.usersentid;
-			usrsent = interaction.client.users.cache.find(user => user.id === usrsentid);
+			usrsent = data.dataValues.usersentid;
 			createdAt = data.dataValues.createdAt;
 			msglink = data.dataValues.imglink;
 			createdAt = createdAt.toString();

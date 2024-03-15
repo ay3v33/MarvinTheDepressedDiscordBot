@@ -26,10 +26,10 @@ const find = (pkey, database) => {
 
 //manually remove
 const remove = async (id, database) => {
-    const data = await database.findOne({ where: { userid: id } });
+    const data = await database.findOne({ where: { phrase: id } });
     data.destroy();
 }
-//remove();
+
 
 module.exports = {
     add,

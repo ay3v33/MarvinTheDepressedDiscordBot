@@ -18,7 +18,6 @@ module.exports = {
 				.setRequired(true)
 		),
 	async execute(interaction) {
-		//const imglink = 'test'
         const phrase = interaction.options.getString('phrase');
 		const data = await Guild.findOne({ where: { phrase: phrase } });
 		let phraseCheck = '';
@@ -34,23 +33,22 @@ module.exports = {
 			countAsInt = 10;
 		}
 		let msgcontent = '';
-		let urssentid = '';
+		let usrsentid = '';
 		if(phrase != phraseCheck) {
 			if(countAsInt<10) {
 
 				interaction.channel.messages.fetch().then(async (messages) => {
 					msgarr = Array.from(messages.values());
 					msgcontent = msgarr[count-1].content;
-					urssentid = msgarr[count-1].author.id;
-					await Guild.findOrCreate({where: {userid: interaction.user.id, username: interaction.user.username, imglink: msgcontent, phrase: phrase, usersentid: urssentid}});
+					usrsentid = msgarr[count-1].author.id;
+					await Guild.findOrCreate({where: {userid: interaction.user.id, username: interaction.user.username, imglink: msgcontent, phrase: phrase, usersentid: usrsentid}});
 				});
 				
 				interaction.reply(`Message saved as ${phrase}`);
 			} else if(countAsInt >= 10) {
-				console.log(count);
 				try {
 					const fetchedMessage = await interaction.channel.messages.fetch(count);
-					await Guild.findOrCreate({where: {userid: interaction.user.id, username: interaction.user.username, imglink: fetchedMessage.content, phrase: phrase, usersentid: urssentid}});
+					await Guild.findOrCreate({where: {userid: interaction.user.id, username: interaction.user.username, imglink: fetchedMessage.content, phrase: phrase, usersentid: fetchedMessage.author.username}});
 					interaction.reply(`Message saved as ${phrase}`);
 				} catch (err) {
 					console.log(err);
