@@ -118,30 +118,21 @@ client.on('messageCreate', async msg => {
 	} catch (err) {
 		console.log(err);
 	}
-	let atted = false;
-	let username = '';
-	try {
-		atted = msg.content.includes('1160724436677308436');
-		username = msg.author.username;
-	} catch(err) {
-		console.log(err);
-	}
-	if(atted) {
-		let randnum = Math.floor(Math.random()*3);
-		try {
-			if(randnum == 0) {
-				replyMessage = ('stfu '+username);
-			} else if(randnum == 1) {
-				replyMessage = ('at me one more time and ur banned buster ;)');
-			} else if(randnum == 2) {
-				replyMessage = ('imbaatakuuuuuuuummmmmmmm');
+
+
+	if(msg.content.substring(2,21) == '1196651925224046622' && msg.content.includes('join vc')) {
+		console.log('yes');
+		if (msg.member.voice.channel) {
+			try {
+			  // Join the user's voice channel
+			  const connection = await msg.member.voice.channel
+			  console.log(connection);
+			} catch(err) {
+				console.log(err);
 			}
-			msg.reply(replyMessage).catch(error => {
-                console.error('Failed to send reply:', error);
-            });
-		} catch (err) {
-			console.log(err);
-		}
+		  } else {
+			message.reply('You need to be in a voice channel to use this command!');
+		  }
 	}
 })
 

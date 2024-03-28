@@ -1,3 +1,5 @@
 const Guild = require('./models/guild');
 
-//Guild.sync({alter: true}); //updates database
+Guild.sync({alter: true}); //updates database
+
+

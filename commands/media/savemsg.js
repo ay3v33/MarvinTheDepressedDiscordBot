@@ -36,7 +36,6 @@ module.exports = {
 		let usrsentid = '';
 		if(phrase != phraseCheck) {
 			if(countAsInt<10) {
-
 				interaction.channel.messages.fetch().then(async (messages) => {
 					msgarr = Array.from(messages.values());
 					msgcontent = msgarr[count-1].content;
