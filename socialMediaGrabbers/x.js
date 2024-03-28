@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
-const destination = 'C:\\Users\\NuggetCentral\\Documents\\discordBot\\socialMediaGrabbers\\downloadedLinks';
+const destination = __dirname+'\\downloadedLinks';
 
 const getXMedia = (link) => {
     (async () => {
