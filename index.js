@@ -8,7 +8,6 @@ const { getTokMedia, sendTokMedia } = require('./socialMediaGrabbers/tt.js');
 const { getIGMedia, sendIGMedia } = require('./socialMediaGrabbers/insta.js');
 const Queue = require('./socialMediaGrabbers/Queue.js');
 const queue = new Queue();
-let atcount = 1;
 
 
 const client = new Client({ 
@@ -202,4 +201,4 @@ client.on(Events.InteractionCreate, async interaction => {
 	}
 });
 
-client.login(process.env.TESTTOKEN);
+client.login(process.env.TOKEN);

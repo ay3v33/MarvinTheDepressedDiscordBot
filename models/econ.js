@@ -1,28 +1,24 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../utils/database');
 
-const Guild = sequelize.define('bigDB', {
-
+const Econ = sequelize.define('econ', {
     userid: {
         type: Sequelize.STRING,
+        primaryKey: true,
         allowNull: false
     },
     username: {
         type: Sequelize.STRING,
         allowNull: false
     },
-    imglink: {
-        type: Sequelize.STRING,
+    marvincoinBalance: {
+        type: Sequelize.INTEGER,
         allowNull: false
     },
-    phrase: {
-        type: Sequelize.STRING,
-        primaryKey: true
-    },
-    usersentid: {
-        type: Sequelize.STRING,
-        allowNull: false
+    lastDailyCollected: {
+        type: Sequelize.DATE,
+        allowNull: true
     }
 })
 
-module.exports = bigDB;
+module.exports = Econ;

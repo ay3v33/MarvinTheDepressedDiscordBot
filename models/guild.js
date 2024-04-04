@@ -2,7 +2,6 @@ const Sequelize = require('sequelize');
 const sequelize = require('../utils/database');
 
 const Guild = sequelize.define('guild', {
-
     userid: {
         type: Sequelize.STRING,
         allowNull: false
