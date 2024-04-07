@@ -174,7 +174,6 @@ client.on('messageCreate', async msg => {
 					randArr[i] = slotsArr[0];
 			}
 			if (interaction.customId === 'spin') {
-				if()
 				interaction.update({ content: `| ${randArr[0]} | ${randArr[1]} | ${randArr[2]}| 
 											 \n| ${randArr[3]} | ${randArr[4]} | ${randArr[5]}| 
 											 \n| ${randArr[6]} | ${randArr[7]} | ${randArr[8]}|\n`, components: [buttonRow] });
