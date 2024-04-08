@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path')
-const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, Events, GatewayIntentBits, Collection, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
 require('dotenv').config();
-const dbmethods = require('./editDB');
 const { getXMedia, sendXMedia } = require('./socialMediaGrabbers/x.js');
 const { getTokMedia, sendTokMedia } = require('./socialMediaGrabbers/tt.js');
 const { getIGMedia, sendIGMedia } = require('./socialMediaGrabbers/insta.js');
+const Guild = require('./models/econ');
 const Queue = require('./socialMediaGrabbers/Queue.js');
 const queue = new Queue();
 
@@ -23,6 +23,19 @@ const client = new Client({
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
 });
+
+function randNum(min, max) {
+    // Generate a random number between 0 and 1
+    const random = Math.random();
+
+    // Scale the random number to fit within the desired range
+    const scaled = random * (max - min + 1);
+
+    // Shift the result to start from the minimum value
+    const result = Math.floor(scaled) + min;
+
+    return result;
+}
 
 const handleMedia = async (Q, msg) => {
 	let flpth = '';
@@ -99,8 +112,13 @@ const deleteMedia = () => {
     }
 }
 
+const slotsItemsArr = [':smiling_imp:', ':sweat_drops:', ':eggplant:', ':skull:'];
+
 
 client.on('messageCreate', async msg => {
+	if(msg.author.bot) return;
+	let userid = msg.author.id;
+	
 	const urlRegex = /(?:^|\/)(https?:\/\/[^\s]+)/gi;
 	const messageContent = msg.content;
 	let matchedLinks = messageContent.match(urlRegex);
@@ -119,19 +137,132 @@ client.on('messageCreate', async msg => {
 	}
 
 
-	if(msg.content.substring(2,21) == '1196651925224046622' && msg.content.includes('join vc')) {
-		console.log('yes');
-		if (msg.member.voice.channel) {
-			try {
-			  // Join the user's voice channel
-			  const connection = await msg.member.voice.channel
-			  console.log(connection);
-			} catch(err) {
-				console.log(err);
+	if(msg.content.toLowerCase() == '/gamble') {
+		msg.reply('use \'/slots\' to play slots ');
+	}
+
+	if(msg.content.toLowerCase() == '/slots') {
+		let amntWon = 0;
+		let multiplier = 1;
+		try {
+			const spin = new ButtonBuilder()
+			.setLabel('spin')
+			.setStyle(ButtonStyle.Success)
+			.setCustomId('spin')
+
+		const quit = new ButtonBuilder()
+			.setLabel('quit')
+			.setStyle(ButtonStyle.Danger)
+			.setCustomId('quit')
+
+		const buttonRow = new ActionRowBuilder().addComponents(spin, quit);
+
+		const reply = await msg.reply({ content: 'Get three in a row to win 3 marvin coins\nEggplants have a 4x multiplier\neach roll cost 2 marvincoins\nX \t X \t X\nX \t X \t X\nX \t X \t X\n', components: [buttonRow] });
+
+		const filter = (i) => i.user.id === msg.author.id;
+
+		const collector = reply.createMessageComponentCollector({
+			componentType: ComponentType.Button,
+			filter,
+		});
+		
+		
+		 
+		collector.on('collect', async (interaction) => {
+			let randArr = ['', '', '', '', '', '', '', '', '',];
+			for(let i=0; i<9; i++) {
+				let rand = randNum(1, 10);
+				if(rand < 3)
+					randArr[i] = slotsItemsArr[2];
+				else if(rand < 5)
+					randArr[i] = slotsItemsArr[1];
+				else if(rand < 9) {
+					randArr[i] = slotsItemsArr[3];
+				}
+				else
+					randArr[i] = slotsItemsArr[0];
 			}
-		  } else {
-			message.reply('You need to be in a voice channel to use this command!');
-		  }
+			const  userProfile = await Guild.findByPk(userid);
+        	
+			if (interaction.customId === 'spin') {
+				if(userProfile.marvincoinBalance < 2) {
+					interaction.reply(`Your balance is ${userProfile.marvincoinBalance} broke boy`);
+					return;
+				}
+				if(randArr[0] == randArr[1] && randArr[0] == randArr[2]) {
+					if(randArr[0] == randArr[3] && randArr[0] == randArr[4] && randArr[0] == randArr[5]) {
+						if(randArr[0] == randArr[6] && randArr[0] == randArr[7] && randArr[0] == randArr[8]) {
+							{
+								if(randArr[0] == slotsItemsArr[0]) {
+									multiplier = 1;
+								} else if(randArr[0] == slotsItemsArr[2]) {
+									multiplier = 4;
+								}
+								amntWon = 3*multiplier*100;
+							}
+						} else {
+							if(randArr[0] == slotsItemsArr[0]) {
+								multiplier = 1;
+							} else if(randArr[0] == slotsItemsArr[2]) {
+								multiplier = 4;
+							}
+							amntWon = 3*multiplier * 3;
+						} 
+					} else {
+						if(randArr[0] == slotsItemsArr[0]) {
+							multiplier = 1;
+						} else if(randArr[0] == slotsItemsArr[2]) {
+							multiplier = 4;
+						}
+						amntWon = 3*multiplier;
+					}
+					
+				} else if(randArr[3] == randArr[4] && randArr[3] == randArr[5]) {
+					if(randArr[3] == randArr[6] && randArr[3] == randArr[7] && randArr[3] == randArr[8]) {
+						if(randArr[3] == slotsItemsArr[0]) {
+							multiplier = 1;
+						} else if(randArr[3] == slotsItemsArr[2]) {
+							multiplier = 4;
+						}
+						amntWon = 3*multiplier * 3;
+					} else {
+						if(randArr[3] == slotsItemsArr[0]) {
+							multiplier = 1;
+						} else if(randArr[3] == slotsItemsArr[2]) {
+							multiplier = 4;
+						}
+						amntWon = 3*multiplier;
+					}
+				} else if(randArr[6] == randArr[7] && randArr[6] == randArr[8]) {
+					if(randArr[6] == slotsItemsArr[0]) {
+						multiplier = 1;
+					} else if(randArr[6] == slotsItemsArr[2]) {
+						multiplier = 4;
+					}
+					amntWon = 3*multiplier;
+				}
+
+				await Guild.update(
+					{ marvincoinBalance: userProfile.marvincoinBalance + amntWon - 2},
+					{ where: { userid: userid } }
+				);
+
+				await interaction.update({ content: `| ${randArr[0]} | ${randArr[1]} | ${randArr[2]}| 
+											 \n| ${randArr[3]} | ${randArr[4]} | ${randArr[5]}| 
+											 \n| ${randArr[6]} | ${randArr[7]} | ${randArr[8]}|
+											 \n You won ${amntWon} marvincoins!`, components: [buttonRow] });
+				multiplier = 1;
+				amntWon = 0;
+				return;
+				}
+				if (interaction.customId === 'quit') {
+					await interaction.update({ content: 'X \t X \t X\nX \t X \t X\nX \t X \t X\n', components: [buttonRow] });
+					return;
+				}
+			})
+		} catch(err) {
+			console.log(err);
+		}
 	}
 })
 
