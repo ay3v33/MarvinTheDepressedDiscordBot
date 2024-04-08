@@ -34,6 +34,15 @@ const remove = async (id, database) => {
 
 //remove(process.env.METH, Econ);
 
+/* drop table
+Econ.drop()
+  .then(() => {
+    console.log('Table dropped successfully.');
+  })
+  .catch(err => {
+    console.error('Error dropping table:', err);
+  });
+  */
 module.exports = {
     add,
     remove
