@@ -9,6 +9,9 @@ const Guild = require('./models/econ');
 const Queue = require('./socialMediaGrabbers/Queue.js');
 const queue = new Queue();
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 const client = new Client({ 
     intents: [
@@ -114,6 +117,63 @@ const deleteMedia = () => {
 
 const slotsItemsArr = [':smiling_imp:', ':sweat_drops:', ':eggplant:', ':skull:'];
 
+class Card {
+	constructor(suit, rank) {
+		this.suit = suit;
+		this.rank = rank;
+	}
+}
+
+function selectRandomSuit() {
+	const suits = ['♦️', '♥️', '♠️', '♣️'];
+	return suits[Math.floor(Math.random() * suits.length)];
+}
+
+function generateCard() {
+	const cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+	return new Card(selectRandomSuit(), cards[Math.floor(Math.random() * cards.length)]);
+}
+
+function calculateHandValue(hand) {
+	let sum = 0;
+	let numAces = 0;
+
+	for (const card of hand) {
+		if (card.rank === 'A') {
+			numAces++;
+			sum += 11;
+		} else if (['J', 'Q', 'K'].includes(card.rank)) {
+			sum += 10;
+		} else {
+			sum += parseInt(card.rank);
+		}
+	}
+
+	// Adjust for aces
+	while (sum > 21 && numAces > 0) {
+		sum -= 10;
+		numAces--;
+	}
+
+	return sum;
+}
+
+// Function to display the current hand and value
+function displayHand(hand, hideFirstCard = false) {	
+	if (hideFirstCard) {
+		return `Hand: ${hand[1].rank} ${hand[1].suit} [?]`;
+	} else {
+		let handstr = ``;
+		for(let i=0;i<hand.length; i++) {
+			handstr += `${hand[i].rank} ${hand[i].suit} `
+		}
+		return `Hand: ` + handstr;
+	}
+}
+
+function isBlackjack(hand) {
+	return hand.length === 2 && calculateHandValue(hand) === 21;
+}
 
 client.on('messageCreate', async msg => {
 	if(msg.author.bot) return;
@@ -135,126 +195,126 @@ client.on('messageCreate', async msg => {
 	} catch (err) {
 		console.log(err);
 	}
-
+	
 
 	if(msg.content.toLowerCase() == '/gamble') {
 		msg.reply('use \'/slots\' to play slots ');
 	}
 
 	if(msg.content.toLowerCase() == '/slots') {
-		let amntWon = 0;
-		let multiplier = 1;
-		try {
-			const spin = new ButtonBuilder()
-			.setLabel('spin')
-			.setStyle(ButtonStyle.Success)
-			.setCustomId('spin')
+			let amntWon = 0;
+			let multiplier = 1;
+			try {
+				const spin = new ButtonBuilder()
+				.setLabel('spin')
+				.setStyle(ButtonStyle.Success)
+				.setCustomId('spin')
 
-		const quit = new ButtonBuilder()
-			.setLabel('quit')
-			.setStyle(ButtonStyle.Danger)
-			.setCustomId('quit')
+				const quit = new ButtonBuilder()
+				.setLabel('quit')
+				.setStyle(ButtonStyle.Danger)
+				.setCustomId('quit')
 
-		const buttonRow = new ActionRowBuilder().addComponents(spin, quit);
+			const buttonRow = new ActionRowBuilder().addComponents(spin, quit);
 
-		const reply = await msg.reply({ content: 'Get three in a row to win 3 marvin coins\nEggplants have a 4x multiplier\neach roll cost 2 marvincoins\nX \t X \t X\nX \t X \t X\nX \t X \t X\n', components: [buttonRow] });
+			const reply = await msg.reply({ content: 'Get three in a row to win 3 marvin coins\nEggplants have a 4x multiplier\neach roll cost 1 marvincoin\nX \t X \t X\nX \t X \t X\nX \t X \t X\n', components: [buttonRow] });
 
-		const filter = (i) => i.user.id === msg.author.id;
+			const filter = (i) => i.user.id === msg.author.id;
 
-		const collector = reply.createMessageComponentCollector({
-			componentType: ComponentType.Button,
-			filter,
-		});
-		
-		
-		 
-		collector.on('collect', async (interaction) => {
-			let randArr = ['', '', '', '', '', '', '', '', '',];
-			for(let i=0; i<9; i++) {
-				let rand = randNum(1, 10);
-				if(rand < 3)
-					randArr[i] = slotsItemsArr[2];
-				else if(rand < 5)
-					randArr[i] = slotsItemsArr[1];
-				else if(rand < 9) {
-					randArr[i] = slotsItemsArr[3];
+			const collector = reply.createMessageComponentCollector({
+				componentType: ComponentType.Button,
+				filter,
+			});
+			
+			
+			
+			collector.on('collect', async (interaction) => {
+				let randArr = ['', '', '', '', '', '', '', '', '',];
+				for(let i=0; i<9; i++) {
+					let rand = randNum(1, 10);
+					if(rand < 3)
+						randArr[i] = slotsItemsArr[2];
+					else if(rand < 5)
+						randArr[i] = slotsItemsArr[1];
+					else if(rand < 9) {
+						randArr[i] = slotsItemsArr[3];
+					}
+					else
+						randArr[i] = slotsItemsArr[0];
 				}
-				else
-					randArr[i] = slotsItemsArr[0];
-			}
-			const  userProfile = await Guild.findByPk(userid);
-        	
-			if (interaction.customId === 'spin') {
-				if(userProfile.marvincoinBalance < 2) {
-					interaction.reply(`Your balance is ${userProfile.marvincoinBalance} broke boy`);
-					return;
-				}
-				if(randArr[0] == randArr[1] && randArr[0] == randArr[2]) {
-					if(randArr[0] == randArr[3] && randArr[0] == randArr[4] && randArr[0] == randArr[5]) {
-						if(randArr[0] == randArr[6] && randArr[0] == randArr[7] && randArr[0] == randArr[8]) {
-							{
+				const  userProfile = await Guild.findByPk(userid);
+				
+				if (interaction.customId === 'spin') {
+					if(userProfile.marvincoinBalance < 1) {
+						interaction.reply(`Your balance is ${userProfile.marvincoinBalance} broke boy`);
+						return;
+					}
+					if(randArr[0] == randArr[1] && randArr[0] == randArr[2]) {
+						if(randArr[0] == randArr[3] && randArr[0] == randArr[4] && randArr[0] == randArr[5]) {
+							if(randArr[0] == randArr[6] && randArr[0] == randArr[7] && randArr[0] == randArr[8]) {
+								{
+									if(randArr[0] == slotsItemsArr[0]) {
+										multiplier = 1;
+									} else if(randArr[0] == slotsItemsArr[2]) {
+										multiplier = 4;
+									}
+									amntWon = 3*multiplier*100;
+								}
+							} else {
 								if(randArr[0] == slotsItemsArr[0]) {
 									multiplier = 1;
 								} else if(randArr[0] == slotsItemsArr[2]) {
 									multiplier = 4;
 								}
-								amntWon = 3*multiplier*100;
-							}
+								amntWon = 3*multiplier * 3;
+							} 
 						} else {
 							if(randArr[0] == slotsItemsArr[0]) {
 								multiplier = 1;
 							} else if(randArr[0] == slotsItemsArr[2]) {
 								multiplier = 4;
 							}
+							amntWon = 3*multiplier;
+						}
+						
+					} else if(randArr[3] == randArr[4] && randArr[3] == randArr[5]) {
+						if(randArr[3] == randArr[6] && randArr[3] == randArr[7] && randArr[3] == randArr[8]) {
+							if(randArr[3] == slotsItemsArr[0]) {
+								multiplier = 1;
+							} else if(randArr[3] == slotsItemsArr[2]) {
+								multiplier = 4;
+							}
 							amntWon = 3*multiplier * 3;
-						} 
-					} else {
-						if(randArr[0] == slotsItemsArr[0]) {
+						} else {
+							if(randArr[3] == slotsItemsArr[0]) {
+								multiplier = 1;
+							} else if(randArr[3] == slotsItemsArr[2]) {
+								multiplier = 4;
+							}
+							amntWon = 3*multiplier;
+						}
+					} else if(randArr[6] == randArr[7] && randArr[6] == randArr[8]) {
+						if(randArr[6] == slotsItemsArr[0]) {
 							multiplier = 1;
-						} else if(randArr[0] == slotsItemsArr[2]) {
+						} else if(randArr[6] == slotsItemsArr[2]) {
 							multiplier = 4;
 						}
 						amntWon = 3*multiplier;
 					}
-					
-				} else if(randArr[3] == randArr[4] && randArr[3] == randArr[5]) {
-					if(randArr[3] == randArr[6] && randArr[3] == randArr[7] && randArr[3] == randArr[8]) {
-						if(randArr[3] == slotsItemsArr[0]) {
-							multiplier = 1;
-						} else if(randArr[3] == slotsItemsArr[2]) {
-							multiplier = 4;
-						}
-						amntWon = 3*multiplier * 3;
-					} else {
-						if(randArr[3] == slotsItemsArr[0]) {
-							multiplier = 1;
-						} else if(randArr[3] == slotsItemsArr[2]) {
-							multiplier = 4;
-						}
-						amntWon = 3*multiplier;
-					}
-				} else if(randArr[6] == randArr[7] && randArr[6] == randArr[8]) {
-					if(randArr[6] == slotsItemsArr[0]) {
+
+					await Guild.update(
+						{ marvincoinBalance: userProfile.marvincoinBalance + amntWon - 1},
+						{ where: { userid: userid } }
+					);
+
+					await interaction.update({ content: `| ${randArr[0]} | ${randArr[1]} | ${randArr[2]}| 
+												\n| ${randArr[3]} | ${randArr[4]} | ${randArr[5]}| 
+												\n| ${randArr[6]} | ${randArr[7]} | ${randArr[8]}|
+												\n You won ${amntWon} marvincoins!`, components: [buttonRow] });
 						multiplier = 1;
-					} else if(randArr[6] == slotsItemsArr[2]) {
-						multiplier = 4;
+						amntWon = 0;
+						return;
 					}
-					amntWon = 3*multiplier;
-				}
-
-				await Guild.update(
-					{ marvincoinBalance: userProfile.marvincoinBalance + amntWon - 2},
-					{ where: { userid: userid } }
-				);
-
-				await interaction.update({ content: `| ${randArr[0]} | ${randArr[1]} | ${randArr[2]}| 
-											 \n| ${randArr[3]} | ${randArr[4]} | ${randArr[5]}| 
-											 \n| ${randArr[6]} | ${randArr[7]} | ${randArr[8]}|
-											 \n You won ${amntWon} marvincoins!`, components: [buttonRow] });
-				multiplier = 1;
-				amntWon = 0;
-				return;
-				}
 				if (interaction.customId === 'quit') {
 					await interaction.update({ content: 'X \t X \t X\nX \t X \t X\nX \t X \t X\n', components: [buttonRow] });
 					return;
@@ -263,6 +323,112 @@ client.on('messageCreate', async msg => {
 		} catch(err) {
 			console.log(err);
 		}
+	}
+
+	
+
+	if(msg.content.toLowerCase() == '/blackjack' || msg.content.toLowerCase() == '/bj') {
+		try {
+			const bet = new ButtonBuilder()
+				.setLabel('bet')
+				.setStyle(ButtonStyle.Success)
+				.setCustomId('bet')
+			
+			const stand = new ButtonBuilder()
+				.setLabel('stand')
+				.setStyle(ButtonStyle.Secondary)
+				.setCustomId('stand')
+
+			const hit = new ButtonBuilder()
+				.setLabel('hit')
+				.setStyle(ButtonStyle.Primary)
+				.setCustomId('hit')
+			const end = new ButtonBuilder()
+				.setLabel('end')
+				.setStyle(ButtonStyle.Danger)
+				.setCustomId('end')
+				
+
+			let buttonRow = new ActionRowBuilder().addComponents(bet, stand, hit, end);
+
+			const reply = await msg.reply({ content: 'Play blackjack\nmust have at least 15 marvincoins', components: [buttonRow] });
+
+			const filter = (i) => i.user.id === msg.author.id;
+
+			const collector = reply.createMessageComponentCollector({
+				componentType: ComponentType.Button,
+				filter,
+			});
+			
+			let betphase = true;
+			let playerHand = [];
+			let dealerHand = [];
+			collector.on('collect', async (interaction) => {
+				if (interaction.customId === 'bet' && betphase) {
+					betphase = false;
+					playerHand = [];
+					dealerHand = [];
+
+					playerHand.push(generateCard());
+					dealerHand.push(generateCard());
+					playerHand.push(generateCard());
+					dealerHand.push(generateCard());
+
+					await interaction.update({ content: 'Dealer ' + displayHand(dealerHand, true)+'\n'+'Player '+displayHand(playerHand), components: [buttonRow] });
+					
+				}
+				let pHandval = calculateHandValue(playerHand);
+				let dHandval = calculateHandValue(dealerHand);
+				if (interaction.customId === 'stand' && !betphase) {
+					
+					while(dHandval < 17) {
+						dealerHand.push(generateCard());
+						sleep(1500);
+						dHandval = calculateHandValue(dealerHand);
+					}
+					if(pHandval > dHandval) {
+						await interaction.update({ content: 'Dealer ' + displayHand(dealerHand)+'\n'+'Player '+displayHand(playerHand) + '\n You win 30 marvincoins!', components: [buttonRow] });
+					} else if(pHandval < dHandval) {
+						await interaction.update({ content: 'Dealer ' + displayHand(dealerHand)+'\n'+'Player '+displayHand(playerHand) + '\n You Lose', components: [buttonRow] });
+					} else {
+						await interaction.update({ content: 'Dealer ' + displayHand(dealerHand)+'\n'+'Player '+displayHand(playerHand) + '\n Draw!', components: [buttonRow] });
+					}
+					betphase = true;
+				} else if(interaction.customId === 'hit' && !betphase) {
+					playerHand.push(generateCard());
+					pHandval = calculateHandValue(playerHand);
+					if( pHandval > 21) {
+						await interaction.update({ content: 'Dealer ' + displayHand(dealerHand)+'\n'+'Player '+displayHand(playerHand) + '\n You went bust!', components: [buttonRow] } );
+						betphase = true;
+					} else if(pHandval == 21) {
+						while(dHandval < 17) {
+							dealerHand.push(generateCard());
+							await interaction.update({ content: 'Dealer ' + displayHand(dealerHand)+'\n'+'Player '+displayHand(playerHand), components: [buttonRow] });
+							sleep(1500);
+						}
+						if(pHandval > dHandval) {
+							await interaction.update({ content: 'Dealer ' + displayHand(dealerHand)+'\n'+'Player '+displayHand(playerHand) + '\n You win 30 marvincoins!', components: [buttonRow] });
+						} else if(pHandval < dHandval) {
+							await interaction.update({ content: 'Dealer ' + displayHand(dealerHand)+'\n'+'Player '+displayHand(playerHand) + '\n You Lose', components: [buttonRow] });
+						} else {
+							await interaction.update({ content: 'Dealer ' + displayHand(dealerHand)+'\n'+'Player '+displayHand(playerHand) + '\n Draw!', components: [buttonRow] });
+						}
+						betphase = true;
+					} else {
+						await interaction.update({ content: 'Dealer ' + displayHand(dealerHand, true)+'\n'+'Player '+displayHand(playerHand) + '\n Value: '+ pHandval, components: [buttonRow] });
+					}
+				} else if(interaction.customId === 'hit' && betphase || interaction.customId === 'stand' && betphase){
+					interaction.update({ content: 'This round is over' });
+				}
+				if (interaction.customId === 'end') {
+					await interaction.update({ content: 'This game ended' });
+					return;
+				}
+			})
+		} catch (err) {
+			console.log(err);
+		}
+
 	}
 })
 
