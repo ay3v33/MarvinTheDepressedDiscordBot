@@ -317,7 +317,7 @@ client.on('messageCreate', async msg => {
 					}
 				if (interaction.customId === 'quit') {
 					await interaction.update({ content: 'X \t X \t X\nX \t X \t X\nX \t X \t X\n', components: [buttonRow] });
-					return;
+					collector.stop();
 				}
 			})
 		} catch(err) {
@@ -405,7 +405,6 @@ client.on('messageCreate', async msg => {
 					} else if(pHandval == 21) {
 						while(dHandval < 17) {
 							dealerHand.push(generateCard());
-							await interaction.update({ content: 'Dealer ' + displayHand(dealerHand)+'\n'+'Player '+displayHand(playerHand), components: [buttonRow] });
 							sleep(1500);
 						}
 						if(pHandval > dHandval) {
@@ -424,7 +423,7 @@ client.on('messageCreate', async msg => {
 				}
 				if (interaction.customId === 'end') {
 					await interaction.update({ content: 'This game ended' });
-					return;
+					collector.stop();
 				}
 			})
 		} catch (err) {
