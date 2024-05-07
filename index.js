@@ -386,7 +386,9 @@ client.on('messageCreate', async msg => {
 						sleep(1500);
 						dHandval = calculateHandValue(dealerHand);
 					}
-					if(pHandval > dHandval) {
+					if(dHandval > 21) {
+						await interaction.update({ content: 'Dealer ' + displayHand(dealerHand)+'\n'+'Player '+displayHand(playerHand) + '\n You win 30 marvincoins!', components: [buttonRow] });
+					} else if(pHandval > dHandval) {
 						await interaction.update({ content: 'Dealer ' + displayHand(dealerHand)+'\n'+'Player '+displayHand(playerHand) + '\n You win 30 marvincoins!', components: [buttonRow] });
 					} else if(pHandval < dHandval) {
 						await interaction.update({ content: 'Dealer ' + displayHand(dealerHand)+'\n'+'Player '+displayHand(playerHand) + '\n You Lose', components: [buttonRow] });

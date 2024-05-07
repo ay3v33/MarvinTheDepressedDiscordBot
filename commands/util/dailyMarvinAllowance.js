@@ -34,7 +34,7 @@ module.exports = {
 				{ marvincoinBalance: userProfile.marvincoinBalance + 42, lastDailyCollected: currentDate },
 				{ where: { userid: userid } }
 			);
-			await interaction.editReply(userObj.username + "collected 42 marvincoins");
+			await interaction.editReply(userObj.username + " collected 42 marvincoins");
 		} catch(err) {
 			console.log(err);
 			await interaction.editReply(userObj.username + "an error occurred blame Aidan not me");
